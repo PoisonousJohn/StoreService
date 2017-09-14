@@ -24,9 +24,8 @@ namespace StoreService
             services.Add(new ServiceDescriptor(
                 typeof(DocumentClient),
                 _ => {
-                    var dbConf = Configuration.GetSection("DB");
-                    var endpoint = dbConf.GetValue<string>("Endpoint");
-                    var key = dbConf.GetValue<string>("Key");
+                    var endpoint = Configuration.GetValue<string>("DBEndpoint");
+                    var key = Configuration.GetValue<string>("DBKey");
                     return new DocumentClient(new Uri(endpoint), key);
                 },
                 ServiceLifetime.Singleton
@@ -36,7 +35,7 @@ namespace StoreService
                 typeof(DocumentDBRepo<StoreCatalogEntry>),
                 s => new DocumentDBRepo<StoreCatalogEntry>(
                     s.GetService<DocumentClient>(),
-                    Configuration.GetSection("DB").GetValue<string>("Name"),
+                    Configuration.GetValue<string>("DBName"),
                     "Catalog"),
                 ServiceLifetime.Singleton
             ));
